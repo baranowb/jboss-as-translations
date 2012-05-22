@@ -18,14 +18,14 @@
 		<version>9</version>
 	</parent>
 
-	<groupId>org.jboss.as</groupId>
-	<artifactId>jboss-as-translations</artifactId>
+	<groupId>org.jboss.as.translations</groupId>
+	<artifactId>jboss-as-translations-parent</artifactId>
 	<version>1.0.0.Beta1-SNAPSHOT</version>
 
 	<name>JBoss AS7 Modules Translations</name>
 	<description>AS7 i18n for modules project</description>
 
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<licenses>
 		<license>
@@ -35,6 +35,59 @@
 		</license>
 	</licenses>
 
+	<modules>
+	    <module>appclient</module>
+	    <module>clustering/api</module>
+	    <module>clustering/ejb3-infinispan</module>
+	    <module>clustering/impl</module>
+	    <module>clustering/infinispan</module>
+	    <module>clustering/jgroups</module>
+	    <module>clustering/singleton</module>
+	    <module>clustering/web-infinispan</module>
+	    <module>clustering/web-spi</module>
+	    <module>cmp</module>
+	    <module>connector</module>
+	    <module>controller</module>
+	    <module>controller-client</module>
+	    <module>deployment-repository</module>
+	    <module>deployment-scanner</module>
+	    <module>domain-http/interface</module>
+	    <module>domain-management</module>
+	    <module>ee</module>
+	    <module>ee-deployment</module>
+	    <module>ejb3</module>
+	    <module>embedded</module>
+	    <module>host-controller</module>
+	    <module>jacorb</module>
+	    <module>jaxr</module>
+	    <module>jaxrs</module>
+	    <module>jmx</module>
+	    <module>jpa/core</module>
+	    <module>jpa/hibernate4</module>
+	    <module>jpa/spi</module>
+	    <module>jsr77</module>
+	    <module>logging</module>
+	    <module>mail</module>
+	    <module>management-client-content</module>
+	    <module>modcluster</module>
+	    <module>naming</module>
+	    <module>network</module>
+	    <module>osgi/service</module>
+	    <module>platform-mbean</module>
+	    <module>pojo</module>
+	    <module>process-controller</module>
+	    <module>protocol</module>
+	    <module>remoting</module>
+	    <module>sar</module>
+	    <module>security</module>
+		<module>server</module>
+		<module>threads</module>
+		<module>transactions</module>
+		<module>web</module>
+		<module>webservices/server-integration</module>
+		<module>weld</module>
+		<module>xts</module>
+	</modules>
 
 	<properties>
 
@@ -46,184 +99,269 @@
 		<maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
 		<maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
 
+		<translation.sources.java.directory>${project.build.directory}/src/java</translation.sources.java.directory>
+		<translation.sources.i18n.directory>${project.build.sourceDirectory}/resources</translation.sources.i18n.directory>
+		<translation.generated.files>${project.build.directory}/translation.generated.files</translation.generated.files>
+		<translation.generated.annotations>${translation.generated.files}/annotations</translation.generated.annotations>
 		<!-- Dependency versions. Please keep alphabetical. Each version property should be of the form "version.<groupId>". For example: <version.org.jboss.as> 
 			In cases where multiple artifacts use the same groupId but have different versions, add the artifactId or other qualifier to the property name. 
 			For example: <version.org.jboss.as.console> -->
 		<version.dependency.plugin>2.4</version.dependency.plugin>
 
-		<version.org.jboss.logging.jboss-logging>3.1.1.GA</version.org.jboss.logging.jboss-logging>
-		<version.org.jboss.logging.jboss-logging-processor>1.0.3.Final</version.org.jboss.logging.jboss-logging-processor>
-		<version.org.jboss.logmanager.jboss-logmanager>1.3.1.Final</version.org.jboss.logmanager.jboss-logmanager>
-		<version.org.jboss.logmanager.log4j-jboss-logmanager>1.0.0.Final</version.org.jboss.logmanager.log4j-jboss-logmanager>
+		<version.org.jboss.as>7.2.0.Alpha1-SNAPSHOT</version.org.jboss.as>
+		<version.org.zanata.plugin>1.5.0</version.org.zanata.plugin>
+		<!-- Define in submodule version.translation.groupId - version.translation.artifact - -->
+		<version.translation.version>${version.org.jboss.as}</version.translation.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>org.jboss.as</groupId>
-				<artifactId>jboss-as-server</artifactId>
-				<version>7.2.0.Alpha1-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jboss.logging</groupId>
-				<artifactId>jboss-logging</artifactId>
-				<version>${version.org.jboss.logging.jboss-logging}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.jboss.logging</groupId>
-				<artifactId>jboss-logging-processor</artifactId>
-				<version>${version.org.jboss.logging.jboss-logging-processor}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.jboss.logging</groupId>
-				<artifactId>jul-to-slf4j-stub</artifactId>
-				<version>${version.org.jboss.logging.jul-to-slf4j-stub}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.jboss.logmanager</groupId>
-				<artifactId>jboss-logmanager</artifactId>
-				<version>${version.org.jboss.logmanager.jboss-logmanager}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.jboss.logmanager</groupId>
-				<artifactId>log4j-jboss-logmanager</artifactId>
-				<version>${version.org.jboss.logmanager.log4j-jboss-logmanager}</version>
-			</dependency>
+             <!-- import AS7 -->
+			 <dependency>
+			     <groupId>org.jboss.as</groupId>
+                 <artifactId>jboss-as-parent</artifactId>
+                 <version>${version.org.jboss.as}</version>
+                 <type>pom</type>
+                 <scope>import</scope>
+			 </dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.jboss.as</groupId>
-			<artifactId>jboss-as-server</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.jboss.logging</groupId>
 			<artifactId>jboss-logging-processor</artifactId>
-			<!-- This is a compile-time dependency of this project, but is not needed at compile or runtime by other projects that depend on this project. -->
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<doCheck>false</doCheck>
-					<doUpdate>false</doUpdate>
-					<revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>unpack</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.jboss.as</groupId>
-									<artifactId>jboss-as-server</artifactId>
-									<version>7.2.0.Alpha1-SNAPSHOT</version>
-									<classifier>sources</classifier>
-									<type>jar</type>
-									<overWrite>false</overWrite>
-									<outputDirectory>src/main/java</outputDirectory>
-								</artifactItem>
-							</artifactItems>
-							<includes>**/ServerLogger.java,**/ServerMessages.java</includes>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<compilerArgument>
-						-AgeneratedTranslationFilesPath=${project.build.directory}/generated-translation-files
-					</compilerArgument>
-				</configuration>
-			</plugin>
-		</plugins>
-
-
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>${version.jar.plugin}</version>
-					<configuration>
-						<archive>
-							<manifest>
-								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							</manifest>
-							<manifestEntries>
-								<!--TODO -->
-							</manifestEntries>
-							<manifestSections>
-								<manifestSection>
-									<name>Build-Information</name>
+	<profiles>
+		<profile>
+			<id>i18n-push</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<property>
+					<name>i18n-push</name>
+				</property>
+			</activation>
+			<!-- this profile gets i18n EN files from artifacts it probably should be called with zanata push --> 
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-dependency-plugin</artifactId>
+							<version>${version.dependency.plugin}</version>
+							<executions>
+								<execution>
+									<id>unpack</id>
+									<phase>process-resources</phase>
+									<goals>
+										<goal>unpack</goal>
+									</goals>
+									<configuration>
+										<artifactItems>
+											<artifactItem>
+												<groupId>${version.translation.groupId}</groupId>
+												<artifactId>${version.translation.artifact}</artifactId>
+												<version>${version.translation.version}</version>
+												<type>jar</type>
+												<overWrite>false</overWrite>
+												<!-- this will push to src/main/resources -->
+												<outputDirectory>${translation.sources.i18n.directory}</outputDirectory>
+											</artifactItem>
+										</artifactItems>
+										<includes>**/*.i18n.properties</includes>
+										<overWriteReleases>false</overWriteReleases>
+										<overWriteSnapshots>true</overWriteSnapshots>
+									</configuration>
+								</execution>
+							</executions>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+				<plugins>
+				    <plugin>
+                          <groupId>org.zanata</groupId>
+                          <artifactId>zanata-maven-plugin</artifactId>
+                          <version>${version.org.zanata.plugin}</version>
+                          <configuration>
+                             <!-- Process sub-modules separately, sharing parent config -->
+                             <enableModules>true</enableModules>
+                             <projectConfig>${session.executionRootDirectory}/zanata.xml</projectConfig>
+                              <!-- Generated English i18n.properties are written here: -->
+                             <srcDir>${translation.sources.i18n.directory}</srcDir>
+                             <transDir>${translation.sources.i18n.directory}</transDir>
+                             <includes>**/*.i18n.properties,**/LocalDescriptions.properties</includes>
+                          </configuration>
+                        </plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>i18n-pull</id>
+			<!-- this profile pulls all i18n files from zanata -->
+			<activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>i18n-pull</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                          <groupId>org.zanata</groupId>
+                          <artifactId>zanata-maven-plugin</artifactId>
+                          <version>${version.org.zanata.plugin}</version>
+                          <configuration>
+                             <!-- Process sub-modules separately, sharing parent config -->
+                             <enableModules>true</enableModules>
+                             <projectConfig>${session.executionRootDirectory}/zanata.xml</projectConfig>
+                              <!-- Generated English i18n.properties are written here: -->
+                             <srcDir>${translation.sources.i18n.directory}</srcDir>
+                             <transDir>${translation.sources.i18n.directory}</transDir>
+                             <includes>**/*.i18n.properties,**/LocalDescriptions.properties</includes>
+                          </configuration>
+                        </plugin>
+                </plugins>
+            </build>
+		</profile>
+		<profile>
+			<id>build</id>
+			<activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>build</name>
+                </property>
+            </activation>
+			<!-- This profiles build translation jars for each module based on src/main/resources i18n files. -->
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>buildnumber-maven-plugin</artifactId>
+							<executions>
+								<execution>
+									<phase>validate</phase>
+									<goals>
+										<goal>create</goal>
+									</goals>
+								</execution>
+							</executions>
+							<configuration>
+								<doCheck>false</doCheck>
+								<doUpdate>false</doUpdate>
+								<revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-dependency-plugin</artifactId>
+							<version>${version.dependency.plugin}</version>
+							<executions>
+								<execution>
+									<id>unpack</id>
+									<phase>process-resources</phase>
+									<goals>
+										<goal>unpack</goal>
+									</goals>
+									<configuration>
+										<artifactItems>
+											<artifactItem>
+												<groupId>${version.translation.groupId}</groupId>
+												<artifactId>${version.translation.artifact}</artifactId>
+												<version>${version.translation.version}</version>
+												<classifier>sources</classifier>
+												<type>jar</type>
+												<overWrite>false</overWrite>
+												<outputDirectory>${translation.sources.java.directory}</outputDirectory>
+											</artifactItem>
+										</artifactItems>
+										<includes>**/*Logger.java,**/*Messages.java</includes>
+										<overWriteReleases>false</overWriteReleases>
+										<overWriteSnapshots>true</overWriteSnapshots>
+									</configuration>
+								</execution>
+							</executions>
+						</plugin>
+						<plugin>
+						  <!-- this makes src jar include source properly. -->
+						  <groupId>org.codehaus.mojo</groupId>
+						  <artifactId>build-helper-maven-plugin</artifactId>
+						   <executions>
+						      <execution>
+                                   <id>add-source</id>
+                                   <phase>process-sources</phase>
+                                   <goals>
+                                      <goal>add-source</goal>
+                                   </goals>
+                                   <configuration>
+                                       <sources>
+                                            <source>${translation.sources.java.directory}</source>
+                                       </sources>
+                                   </configuration>
+                              </execution>
+						   </executions>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-jar-plugin</artifactId>
+							<version>${version.jar.plugin}</version>
+							<configuration>
+								<archive>
+									<manifest>
+										<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+										<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+									</manifest>
 									<manifestEntries>
-										<Maven-Version>${maven.version}</Maven-Version>
-										<Java-Version>${java.version}</Java-Version>
-										<Java-Vendor>${java.vendor}</Java-Vendor>
-										<Os-Name>${os.name}</Os-Name>
-										<Os-Arch>${os.arch}</Os-Arch>
-										<Os-Version>${os.version}</Os-Version>
-										<Scm-Url>${jboss.as.scm.url}</Scm-Url>
-										<Scm-Connection>${jboss.as.scm.connection}</Scm-Connection>
-										<Build-Time>${build.timestamp}</Build-Time>
-										<Scm-Version>${buildNumber}</Scm-Version>
+										<!--TODO -->
 									</manifestEntries>
-								</manifestSection>
-							</manifestSections>
-						</archive>
-						<includes>
-							<include>**/*</include>
-						</includes>
-						<!-- exclude EN files, as those are present by default. -->
-						<excludes>
-							<exclude>**/*ServerLogger.class</exclude>
-							<exclude>**/*ServerLogger_$logger.class</exclude>
-							<exclude>**/*ServerMessages.class</exclude>
-							<exclude>**/*ServerMessages_$bundle.class</exclude>
-						</excludes>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<version>${version.dependency.plugin}</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
-
+									<manifestSections>
+										<manifestSection>
+											<name>Build-Information</name>
+											<manifestEntries>
+												<Maven-Version>${maven.version}</Maven-Version>
+												<Java-Version>${java.version}</Java-Version>
+												<Java-Vendor>${java.vendor}</Java-Vendor>
+												<Os-Name>${os.name}</Os-Name>
+												<Os-Arch>${os.arch}</Os-Arch>
+												<Os-Version>${os.version}</Os-Version>
+												<Scm-Url>${jboss.as.scm.url}</Scm-Url>
+												<Scm-Connection>${jboss.as.scm.connection}</Scm-Connection>
+												<Build-Time>${build.timestamp}</Build-Time>
+												<Scm-Version>${buildNumber}</Scm-Version>
+											</manifestEntries>
+										</manifestSection>
+									</manifestSections>
+								</archive>
+								<includes>
+									<include>**/*</include>
+								</includes>
+								<!-- exclude EN files, as those are present by default. -->
+								<excludes>
+									<exclude>**/*Logger.class</exclude>
+									<exclude>**/*Logger_$logger.class</exclude>
+									<exclude>**/*Messages.class</exclude>
+									<exclude>**/*Messages_$bundle.class</exclude>
+								</excludes>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-compiler-plugin</artifactId>
+							<configuration>
+								<compilerArgument>
+									-AgeneratedTranslationFilesPath=${translation.generated.files}
+								</compilerArgument>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
 	<repositories>
 		<repository>
 			<id>jboss-public-repository-group</id>
