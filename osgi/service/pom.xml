@@ -16,6 +16,7 @@
 		<groupId>org.jboss.as.translations</groupId>
 		<artifactId>jboss-as-translations-parent</artifactId>
 		<version>1.0.0.Beta1-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
 	<groupId>org.jboss.as.translations</groupId>
